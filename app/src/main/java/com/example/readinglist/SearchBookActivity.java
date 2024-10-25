@@ -2,6 +2,7 @@ package com.example.readinglist;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import android.widget.Button;
@@ -106,7 +107,6 @@ public class SearchBookActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         progressBar.setVisibility(View.GONE);
 
-
                         try {
                             int numResults = response.optInt("totalItems");
                             if (numResults == 0) {
@@ -135,6 +135,10 @@ public class SearchBookActivity extends AppCompatActivity {
                                     String description = volumeObj.optString("description");
                                     JSONObject imageLinks = volumeObj.optJSONObject("imageLinks");
                                     String thumbnail = imageLinks.optString("smallThumbnail");
+
+                                    // change http to https
+                                    thumbnail = thumbnail.substring(0, 4) + 's' + thumbnail.substring(4);
+
                                     JSONArray genres = volumeObj.getJSONArray("categories");
                                     ArrayList<String> genreArray = new ArrayList<>();
                                     if (genres.length() != 0) {
