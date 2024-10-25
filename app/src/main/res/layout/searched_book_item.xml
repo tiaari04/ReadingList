@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/searched_item_view_parent"
+    app:cardElevation="3dp"
+    app:cardCornerRadius="6dp"
+    android:padding="10dp"
+    android:layout_margin="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/image_sb"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_launcher_background"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:layout_toRightOf="@id/image_sb"
+            android:layout_toEndOf="@id/image_sb">
+
+            <TextView
+                android:id="@+id/bookName_sb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="Book name"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:id="@+id/bookAuthor_sb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/bookName_sb"
+                android:layout_margin="3dp"
+                android:text="By Author"
+                android:textStyle="italic"/>
+
+            <TextView
+                android:id="@+id/genre_sb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/bookAuthor_sb"
+                android:layout_margin="3dp"
+                android:text="Genre" />
+
+            <TextView
+                android:id="@+id/pubYear_sb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/genre_sb"
+                android:layout_margin="3dp"
+                android:text="ISBN:" />
+
+            <TextView
+                android:id="@+id/page_count_sb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pubYear_sb"
+                android:layout_margin="3dp"
+                android:text="Page Count:" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
