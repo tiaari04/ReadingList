@@ -1,6 +1,9 @@
 package com.example.readinglist;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,14 +48,24 @@ public class SearchedBookAdapter extends RecyclerView.Adapter<SearchedBookAdapte
                 holder.authors.append(", ");
             }
         }
-        holder.genre.setText(bookInfo.getGenres().get(0));
-        holder.pageCount.setText("Page Count: " + bookInfo.getPageCount());
         holder.pubyear.setText("Year of publication: " + bookInfo.getPublishedDate());
         holder.searchedBookParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, searchedBooks.get(position).getThumbnail() +
-                        "elected", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, BookDetailsActivity.class);
+                intent.putExtra("title", bookInfo.getTitle());
+                String authors = bookInfo.getAuthors().toString();
+                authors = authors.substring(1, authors.length() - 1);
+                intent.putExtra("authors", authors);
+                intent.putExtra("publishedDate", bookInfo.getPublishedDate());
+                String genres = bookInfo.getGenres().toString();
+                genres = genres.substring(1, genres.length() - 1);
+                intent.putExtra("genres", genres);
+                intent.putExtra("ISBN", bookInfo.getISBN());
+                intent.putExtra("description", bookInfo.getDescription());
+                intent.putExtra("pageCount", Integer.toString(bookInfo.getPageCount()));
+                intent.putExtra("thumbnail", bookInfo.getThumbnail());
+                context.startActivity(intent);
             }
         });
         Glide.with(context)
@@ -72,7 +85,7 @@ public class SearchedBookAdapter extends RecyclerView.Adapter<SearchedBookAdapte
     }
 
     public class SearchedBookViewHolder extends RecyclerView.ViewHolder {
-        private TextView title, authors, genre, pageCount, pubyear;
+        private TextView title, authors,  pubyear;
         private CardView searchedBookParent;
         private ImageView coverPhoto;
 
@@ -80,8 +93,6 @@ public class SearchedBookAdapter extends RecyclerView.Adapter<SearchedBookAdapte
             super(itemView);
             title = itemView.findViewById(R.id.bookName_sb);
             authors = itemView.findViewById(R.id.bookAuthor_sb);
-            genre = itemView.findViewById(R.id.genre_sb);
-            pageCount = itemView.findViewById(R.id.page_count_sb);
             pubyear = itemView.findViewById(R.id.pubYear_sb);
             searchedBookParent = itemView.findViewById(R.id.searched_item_view_parent);
             coverPhoto = itemView.findViewById(R.id.image_sb);

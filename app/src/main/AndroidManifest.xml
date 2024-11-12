@@ -16,6 +16,9 @@
         android:theme="@style/Theme.ReadingList"
         tools:targetApi="31">
         <activity
+            android:name=".BookDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".SearchBookActivity"
             android:exported="false" />
         <activity

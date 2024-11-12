@@ -26,7 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
-            android:layout_toRightOf="@id/image_sb"
             android:layout_toEndOf="@id/image_sb">
 
             <TextView
@@ -42,33 +41,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/bookName_sb"
-                android:layout_margin="3dp"
+                android:layout_margin="5dp"
                 android:text="By Author"
                 android:textStyle="italic"/>
-
-            <TextView
-                android:id="@+id/genre_sb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/bookAuthor_sb"
-                android:layout_margin="3dp"
-                android:text="Genre" />
 
             <TextView
                 android:id="@+id/pubYear_sb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/genre_sb"
-                android:layout_margin="3dp"
-                android:text="ISBN:" />
+                android:layout_below="@id/bookAuthor_sb"
+                android:layout_margin="5dp"
+                android:text="Year of Publication: " />
 
-            <TextView
-                android:id="@+id/page_count_sb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/pubYear_sb"
-                android:layout_margin="3dp"
-                android:text="Page Count:" />
 
         </RelativeLayout>
     </RelativeLayout>
