@@ -1,13 +1,19 @@
 package com.example.readinglist;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -43,6 +49,9 @@ public class SearchBookActivity extends AppCompatActivity {
     private ImageButton searchButton;
     private ArrayList<SearchedBookInfo> searchedBooks;
     private RequestQueue requestQueue;
+    private Button filterButton;
+    private String title, author, isbn, pubYear;
+    private boolean queryTitle, queryAuthor, queryISBN, queryPubYear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +64,14 @@ public class SearchBookActivity extends AppCompatActivity {
         backButton = findViewById(R.id.back_button);
         progressBar = findViewById(R.id.progress_bar);
         searchButton = findViewById(R.id.search_button);
+        filterButton = findViewById(R.id.filter_btn);
 
         searchedBooks = new ArrayList<>();
+
+        queryTitle = false;
+        queryAuthor = false;
+        queryISBN = false;
+        queryPubYear = false;
 
         SearchedBookAdapter adapter = new SearchedBookAdapter(this);
         adapter.setBooks(searchedBooks);
@@ -86,6 +101,62 @@ public class SearchBookActivity extends AppCompatActivity {
                 // calling get book info method to load all
                 // the books from the API.
                 booksInfo(searchBar.getText().toString());
+            }
+        });
+
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder filtersAlert = new AlertDialog.Builder(SearchBookActivity.this);
+
+                final EditText titleET = new EditText(SearchBookActivity.this);
+                final EditText authorET = new EditText(SearchBookActivity.this);
+                final EditText isbnET = new EditText(SearchBookActivity.this);
+                final EditText pubYearET = new EditText(SearchBookActivity.this);
+
+                filtersAlert.setTitle("Filter Options");
+                filtersAlert.setView(titleET);
+                filtersAlert.setView(authorET);
+                filtersAlert.setView(isbnET);
+                filtersAlert.setView(pubYearET);
+
+                titleET.setHint("Title");
+                authorET.setHint("Author");
+                isbnET.setHint("ISBN-13");
+                pubYearET.setHint("Publication Year");
+
+                isbnET.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+                if (!searchBar.getText().toString().isEmpty()) {
+                    titleET.setText(searchBar.getText().toString());
+                }
+
+                LinearLayout filterLayout = new LinearLayout(SearchBookActivity.this);
+                filterLayout.setOrientation(LinearLayout.VERTICAL);
+                filterLayout.addView(titleET); // displays the user input bar
+                filterLayout.addView(authorET);
+                filterLayout.addView(isbnET);
+                filterLayout.addView(pubYearET);
+                filtersAlert.setView(filterLayout);
+
+                filtersAlert.setPositiveButton("Search", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        title = titleET.getText().toString();
+                        author = authorET.getText().toString();
+                        isbn = isbnET.getText().toString();
+                        pubYear = pubYearET.getText().toString();
+                        collectInput();
+
+                        // when search is pressed it shows the list of books like when the search button is pressed
+                    }
+                });
+
+                filtersAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.cancel();
+                    }
+                });
+                filtersAlert.show();
             }
         });
     }
@@ -170,16 +241,22 @@ public class SearchBookActivity extends AppCompatActivity {
                 }
         );
         requestQueue.add(booksObjectRequest);
-        {
-            /*@Override
-                public Map getHeaders() throws AuthFailureError {
-                HashMap headers = new HashMap();
-                headers.put("Content-Type", "application/json");
-                headers.put("X-Android-Package", "com.example.readinglist");
-                headers.put("X-Android-Cert", "353561572223829763ADADEC8358F69BEA51A81C");
-                return headers;
-            }*/
-        };
+    }
+
+    public void collectInput() {
+        // ensure that user input bar is not empty
+        if (title != null && !title.isEmpty()) {queryTitle = true;}
+        if (author != null && !author.isEmpty()) {queryAuthor = true;}
+        if (isbn != null && !isbn.isEmpty()) {
+            if (isbn.trim().length() != 13) {
+                Toast toast = Toast.makeText(SearchBookActivity.this, "The ISBN should be 13 digits", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+            else {
+                queryISBN = true;
+            }
+        }
+        if (pubYear != null && !pubYear.isEmpty()) {queryPubYear = true;}
     }
 }
 
