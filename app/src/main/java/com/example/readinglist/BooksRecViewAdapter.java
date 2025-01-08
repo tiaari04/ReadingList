@@ -36,20 +36,36 @@ public class BooksRecViewAdapter extends RecyclerView.Adapter<BooksRecViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bookName.setText(books.get(position).getBookName());
-        holder.authorName.setText(books.get(position).getAuthor());
+        if (books.get(position).getAuthor().isEmpty()) {
+            holder.authorName.setText("No authors found");
+        }
+        else {
+            holder.authorName.setText(books.get(position).getAuthor());
+        }
+
+        if (books.get(position).getImgURL() == null) {
+            holder.img.setImageDrawable(context.getApplicationContext().getDrawable(R.drawable.ic_image_not_found));
+        }
+        else {
+            Glide.with(context)
+                    .asBitmap()
+                    .load(books.get(position).getImgURL())
+                    .error(R.drawable.ic_image_not_found)
+                    .into(holder.img);
+        }
+
+        if (books.get(position).getIsRead() == 0) {
+            holder.readStatus.setText("Status: unread");
+        }
+        else {
+            holder.readStatus.setText("Status: read");
+        }
         holder.itemViewParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, books.get(position).getBookName() + " s" +
-                        "elected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, books.get(position).getBookName() + " selected", Toast.LENGTH_SHORT).show();
             }
         });
-
-        Glide.with(context)
-                .asBitmap()
-                .load(books.get(position).getImgURL())
-                .error(R.drawable.ic_image_not_found)
-                .into(holder.img);
     }
 
     @Override
@@ -63,7 +79,7 @@ public class BooksRecViewAdapter extends RecyclerView.Adapter<BooksRecViewAdapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView bookName, authorName;
+        private TextView bookName, authorName, readStatus;
         private CardView itemViewParent;
         private ImageView img;
 
@@ -71,6 +87,7 @@ public class BooksRecViewAdapter extends RecyclerView.Adapter<BooksRecViewAdapte
             super(itemView);
             bookName = itemView.findViewById(R.id.bookName);
             authorName = itemView.findViewById(R.id.bookAuthor);
+            readStatus = itemView.findViewById(R.id.read_status);
             itemViewParent = itemView.findViewById(R.id.item_view_parent);
             img = itemView.findViewById(androidx.appcompat.R.id.image);
         }
