@@ -16,12 +16,13 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-public class BooksRecViewAdapter extends RecyclerView.Adapter<BooksRecViewAdapter.ViewHolder> {
+public class SubBooksRecViewAdapter extends RecyclerView.Adapter<SubBooksRecViewAdapter.ViewHolder> {
 
-    private ArrayList<Book> books = new ArrayList<>();
+    private ArrayList<Book> books;
     private Context context;
 
-    public BooksRecViewAdapter(Context context) {
+    public SubBooksRecViewAdapter(ArrayList<Book> books, Context context) {
+        this.books = books;
         this.context = context;
     }
 
@@ -36,20 +37,24 @@ public class BooksRecViewAdapter extends RecyclerView.Adapter<BooksRecViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bookName.setText(books.get(position).getBookName());
-        holder.authorName.setText(books.get(position).getAuthor());
+
+        if (books.get(position).getImgURL() == null) {
+            holder.img.setImageDrawable(context.getApplicationContext().getDrawable(R.drawable.ic_image_not_found));
+        }
+        else {
+            Glide.with(context)
+                    .asBitmap()
+                    .load(books.get(position).getImgURL())
+                    .error(R.drawable.ic_image_not_found)
+                    .into(holder.img);
+        }
+
         holder.itemViewParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, books.get(position).getBookName() + " s" +
-                        "elected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, books.get(position).getBookName() + " selected", Toast.LENGTH_SHORT).show();
             }
         });
-
-        Glide.with(context)
-                .asBitmap()
-                .load(books.get(position).getImgURL())
-                .error(R.drawable.ic_image_not_found)
-                .into(holder.img);
     }
 
     @Override
@@ -57,20 +62,14 @@ public class BooksRecViewAdapter extends RecyclerView.Adapter<BooksRecViewAdapte
         return books.size();
     }
 
-    public void setBooks(ArrayList<Book> books) {
-        this.books = books;
-        notifyDataSetChanged();
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView bookName, authorName;
+        private TextView bookName;
         private CardView itemViewParent;
         private ImageView img;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             bookName = itemView.findViewById(R.id.bookName);
-            authorName = itemView.findViewById(R.id.bookAuthor);
             itemViewParent = itemView.findViewById(R.id.item_view_parent);
             img = itemView.findViewById(androidx.appcompat.R.id.image);
         }

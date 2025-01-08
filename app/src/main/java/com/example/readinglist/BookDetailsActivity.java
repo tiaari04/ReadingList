@@ -52,23 +52,69 @@ public class BookDetailsActivity extends AppCompatActivity {
         ISBN = getIntent().getStringExtra("ISBN");
         genres = getIntent().getStringExtra("genres");
 
-        titleTV.setText(title);
-        publishDateTV.setText("Published In : " + publishedDate);
-        descTV.setText(description);
-        pageTV.setText("Page Count: " + pageCount);
-        authorsTV.setText("By " + authors);
-        genresTV.setText("Genre(s): " + genres);
-        ISBNTV.setText("ISBN-13: " + ISBN);
+        if (title == null) {
+            titleTV.setText("No title found");
+        }
+        else {
+            titleTV.setText(title);
+        }
 
-        Glide.with(this)
-                .asBitmap()
-                .load(thumbnail)
-                .into(bookIV);
+        if (publishedDate == null) {
+            publishDateTV.setText("Published In : No year found");
+        }
+        else {
+            publishDateTV.setText("Published In : " + publishedDate);
+        }
+
+        if (description == null) {
+            descTV.setText("No description found");
+        }
+        else {
+            descTV.setText("Description:\n\t" + description);
+        }
+
+        if (pageCount == null || Integer.parseInt(pageCount) == 0) {
+            pageTV.setText("No page count found");
+        }
+        else {
+            pageTV.setText("Page Count: " + pageCount);
+        }
+
+        if (authors.length() == 0) {
+            authorsTV.setText("No authors found");
+        }
+        else {
+            authorsTV.setText("By " + authors);
+        }
+
+        if (genres.length() == 0) {
+            genresTV.setText("No genre found");
+        }
+        else {
+            genresTV.setText("Genre(s): " + genres);
+        }
+
+        if (ISBN == null) {
+            ISBNTV.setText("No ISBN found");
+        }
+        else {
+            ISBNTV.setText("ISBN-13: " + ISBN);
+        }
+
+        if (thumbnail == null) {
+            bookIV.setImageDrawable(getApplicationContext().getDrawable(R.drawable.ic_image_not_found));
+        }
+        else {
+            Glide.with(this)
+                    .asBitmap()
+                    .load(thumbnail)
+                    .into(bookIV);
+        }
 
         addToLibBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                addBookToUserLibrary();
             }
         });
 
@@ -78,5 +124,13 @@ public class BookDetailsActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void addBookToUserLibrary() {
+        String androidID = DeviceUtilities.getAndroidID(this);
+
+        HttpHelper.addUserBook(this, androidID, title, authors, thumbnail, 0);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
     }
 }

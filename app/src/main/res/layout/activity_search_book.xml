@@ -6,46 +6,111 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SearchBookActivity"
-    android:padding="20dp">
+    android:padding="20dp"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:id="@+id/lin_layout"
-        android:weightSum="5">
+        android:orientation="vertical">
 
-        <EditText
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/search_bar"
-            android:textSize="15dp"
-            android:hint="Search"
-            android:layout_weight="4"
-            />
+            android:orientation="horizontal"
+            android:id="@+id/lin_layout_sub"
+            android:weightSum="5">
 
-        <ImageButton
-            android:id="@+id/search_button"
-            android:layout_width="0dp"
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_text_background"
+                android:fontFamily="@font/inter_medium"
+                android:id="@+id/search_bar"
+                android:textSize="15dp"
+                android:hint="Title"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="4"
+                android:backgroundTint="@color/grey"
+                />
+
+            <ImageButton
+                android:id="@+id/search_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_action_name"
+                android:background="@color/white"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_action_name" />
+            android:id="@+id/filter_layout"
+            android:layout_below="@+id/lin_layout"
+            android:layout_alignParentEnd="true">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/filter_author"
+                android:background="@drawable/edit_text_background"
+                android:fontFamily="@font/inter_medium"
+                android:layout_marginBottom="8dp"
+                android:textSize="15dp"
+                android:hint="Author"
+                android:visibility="gone"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/filter_isbn"
+                android:background="@drawable/edit_text_background"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="15dp"
+                android:layout_below="@id/filter_author"
+                android:hint="ISBN"
+                android:inputType="number"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/filter_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/filter_isbn"
+                android:text="Filters"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/white"
+                android:fontFamily="@font/inter_medium"/>
+
+            <Button
+                android:id="@+id/hide_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/filter_isbn"
+                android:text="Hide"
+                android:textSize="15dp"
+                android:visibility="gone"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/white"
+                android:fontFamily="@font/inter_medium"/>
+
+        </RelativeLayout>
+
     </LinearLayout>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/filter_btn"
-        android:layout_below="@+id/lin_layout"
-        android:layout_margin="5dp"
-        android:layout_alignParentEnd="true"
-        android:text="Filter"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/searchRecView"
-        android:layout_below="@id/filter_btn"/>
+        android:layout_below="@id/lin_layout"/>
 
     <TextView
         android:id="@+id/search_textview"
@@ -63,7 +128,9 @@
         android:layout_height="wrap_content"
         android:text="Back to Reading List"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:backgroundTint="@color/purple"
+        />
 
     <ProgressBar
         android:id="@+id/progress_bar"

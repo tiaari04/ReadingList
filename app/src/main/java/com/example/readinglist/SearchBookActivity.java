@@ -1,6 +1,9 @@
 package com.example.readinglist;
 
+import static org.json.JSONObject.NULL;
+
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,9 +53,14 @@ public class SearchBookActivity extends AppCompatActivity {
     private ImageButton searchButton;
     private ArrayList<SearchedBookInfo> searchedBooks;
     private RequestQueue requestQueue;
+
     private Button filterButton;
-    private String title, author, isbn, pubYear;
-    private boolean queryTitle, queryAuthor, queryISBN, queryPubYear;
+    private EditText authorFilter;
+    private EditText isbnFilter;
+    private Button hideBtn;
+
+    private String title, author, isbn;
+    private boolean queryTitle, queryAuthor, queryISBN;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,17 +73,21 @@ public class SearchBookActivity extends AppCompatActivity {
         backButton = findViewById(R.id.back_button);
         progressBar = findViewById(R.id.progress_bar);
         searchButton = findViewById(R.id.search_button);
+
         filterButton = findViewById(R.id.filter_btn);
+        authorFilter = findViewById(R.id.filter_author);
+        isbnFilter = findViewById(R.id.filter_isbn);
+
+        hideBtn = findViewById(R.id.hide_btn);
 
         searchedBooks = new ArrayList<>();
+
+        SearchedBookAdapter adapter = new SearchedBookAdapter(this);
+        adapter.setBooks(searchedBooks);
 
         queryTitle = false;
         queryAuthor = false;
         queryISBN = false;
-        queryPubYear = false;
-
-        SearchedBookAdapter adapter = new SearchedBookAdapter(this);
-        adapter.setBooks(searchedBooks);
 
         booksFound.setLayoutManager((new LinearLayoutManager(this, RecyclerView.VERTICAL, false)));
         booksFound.setAdapter(adapter);
@@ -90,86 +103,59 @@ public class SearchBookActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                queryAuthor = false;
+                queryTitle = false;
+                queryISBN = false;
+                searchedBooks.clear();
+
+
                 progressBar.setVisibility(View.VISIBLE);
 
-                // checking if our edittext field is empty or not.
-                if (searchBar.getText().toString().isEmpty()) {
-                    searchBar.setError("Please enter search query");
-                    return;
-                }
+                collectInput();
+                String query = buildQuery();
+
                 // if the search query is not empty then we are
                 // calling get book info method to load all
                 // the books from the API.
-                booksInfo(searchBar.getText().toString());
+                booksInfo(query);
+                adapter.notifyDataSetChanged();
+
             }
         });
 
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
+            public void onClick(View v) {
+                authorFilter.setVisibility(View.VISIBLE);
+                isbnFilter.setVisibility(View.VISIBLE);
+                hideBtn.setVisibility(View.VISIBLE);
+                filterButton.setVisibility(View.GONE);
+            }
+        });
+
+        hideBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View view) {
-                AlertDialog.Builder filtersAlert = new AlertDialog.Builder(SearchBookActivity.this);
-
-                final EditText titleET = new EditText(SearchBookActivity.this);
-                final EditText authorET = new EditText(SearchBookActivity.this);
-                final EditText isbnET = new EditText(SearchBookActivity.this);
-                final EditText pubYearET = new EditText(SearchBookActivity.this);
-
-                filtersAlert.setTitle("Filter Options");
-                filtersAlert.setView(titleET);
-                filtersAlert.setView(authorET);
-                filtersAlert.setView(isbnET);
-                filtersAlert.setView(pubYearET);
-
-                titleET.setHint("Title");
-                authorET.setHint("Author");
-                isbnET.setHint("ISBN-13");
-                pubYearET.setHint("Publication Year");
-
-                isbnET.setInputType(InputType.TYPE_CLASS_NUMBER);
-
-                if (!searchBar.getText().toString().isEmpty()) {
-                    titleET.setText(searchBar.getText().toString());
-                }
-
-                LinearLayout filterLayout = new LinearLayout(SearchBookActivity.this);
-                filterLayout.setOrientation(LinearLayout.VERTICAL);
-                filterLayout.addView(titleET); // displays the user input bar
-                filterLayout.addView(authorET);
-                filterLayout.addView(isbnET);
-                filterLayout.addView(pubYearET);
-                filtersAlert.setView(filterLayout);
-
-                filtersAlert.setPositiveButton("Search", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        title = titleET.getText().toString();
-                        author = authorET.getText().toString();
-                        isbn = isbnET.getText().toString();
-                        pubYear = pubYearET.getText().toString();
-                        collectInput();
-
-                        // when search is pressed it shows the list of books like when the search button is pressed
-                    }
-                });
-
-                filtersAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.cancel();
-                    }
-                });
-                filtersAlert.show();
+                authorFilter.setVisibility(View.GONE);
+                isbnFilter.setVisibility(View.GONE);
+                hideBtn.setVisibility(View.GONE);
+                filterButton.setVisibility(View.VISIBLE);
             }
         });
     }
 
-    public void booksInfo(String query) {
+    public void booksInfo(String url) {
+        noResults.setVisibility(View.GONE);
+        booksFound.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
 
-        requestQueue = Volley.newRequestQueue(SearchBookActivity.this);
+        // Initialize the request queue only once
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(SearchBookActivity.this);
+        }
 
+        // Clear cache to avoid old responses
         requestQueue.getCache().clear();
-
-        String url = "https://www.googleapis.com/books/v1/volumes?q=" + query + "&key=AIzaSyBsFway_No563HaVDieoaixsaG8ocK6t7w";
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         JsonObjectRequest booksObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null,
@@ -180,43 +166,101 @@ public class SearchBookActivity extends AppCompatActivity {
 
                         try {
                             int numResults = response.optInt("totalItems");
-                            if (numResults == 0) {
-                                progressBar.setVisibility(View.GONE);
+                            if (numResults == 0) {booksFound.setVisibility(View.INVISIBLE);
                                 noResults.setVisibility(View.VISIBLE);
                             }
                             else {
                                 noResults.setVisibility(View.GONE);
+                                booksFound.setVisibility(View.VISIBLE);
 
                                 JSONArray itemsArray = response.getJSONArray("items");
                                 for (int i = 0; i < itemsArray.length(); i++) {
                                     JSONObject itemsObj = itemsArray.getJSONObject(i);
                                     JSONObject volumeObj = itemsObj.getJSONObject("volumeInfo");
-                                    String title = volumeObj.optString("title");
-                                    JSONArray authors = volumeObj.getJSONArray("authors");
+
+                                    String title;
+                                    if (volumeObj.has("title")) {
+                                        title = volumeObj.optString("title");
+                                    }
+                                    else {
+                                        title = null;
+                                    }
+
+                                    JSONArray authors;
                                     ArrayList<String> authorsArray = new ArrayList<>();
-                                    if (authors.length() != 0) {
-                                        for (int j = 0; j < authors.length(); j++) {
-                                            authorsArray.add(authors.optString(j));
+                                    if (volumeObj.has("authors")) {
+                                        authors = volumeObj.getJSONArray("authors");
+                                        if (authors.length() != 0) {
+                                            for (int j = 0; j < authors.length(); j++) {
+                                                authorsArray.add(authors.optString(j));
+                                            }
                                         }
                                     }
-                                    String publishedDate = volumeObj.optString("publishedDate");
-                                    String[] parts = publishedDate.split("-");
-                                    String pubYear = parts[0];
-                                    int pageCount = volumeObj.optInt("pageCount");
-                                    String description = volumeObj.optString("description");
-                                    JSONObject imageLinks = volumeObj.optJSONObject("imageLinks");
-                                    String thumbnail = imageLinks.optString("smallThumbnail");
 
-                                    // change http to https
-                                    thumbnail = thumbnail.substring(0, 4) + 's' + thumbnail.substring(4);
+                                    String publishedDate;
+                                    String pubYear;
+                                    if (volumeObj.has("publishedDate")) {
+                                        publishedDate = volumeObj.optString("publishedDate");
+                                        String[] parts = publishedDate.split("-");
+                                        pubYear = parts[0];
+                                    }
+                                    else {
+                                        pubYear = null;
+                                    }
 
-                                    JSONArray genres = volumeObj.getJSONArray("categories");
+                                    int pageCount;
+                                    if (volumeObj.has("pageCount")) {
+                                        pageCount = volumeObj.optInt("pageCount");
+                                    }
+                                    else {
+                                        pageCount = Integer.parseInt(null);
+                                    }
+
+                                    String description;
+                                    if (volumeObj.has("description")) {
+                                        description = volumeObj.optString("description");
+                                    }
+                                    else {
+                                        description = null;
+                                    }
+                                    //JSONObject imageLinks = volumeObj.optJSONObject("imageLinks");
+                                    //String thumbnail;
+                                    /*if (imageLinks != NULL) {
+                                        thumbnail = imageLinks.optString("smallThumbnail");
+                                        // change http to https
+                                        thumbnail = thumbnail.substring(0, 4) + 's' + thumbnail.substring(4);
+                                    }
+                                    else {
+                                        thumbnail = "https://recsports.utk.edu/wp-content/uploads/sites/46/2018/05/Image-not-available_1-1-800x800.jpg";
+                                    }*/
+
+                                    String thumbnail;
+                                    if (volumeObj.has("imageLinks")) {
+                                        if (volumeObj.optJSONObject("imageLinks").has("smallThumbnail")) {
+                                            JSONObject imageLinks = volumeObj.optJSONObject("imageLinks");
+                                            thumbnail = imageLinks.optString("smallThumbnail");
+                                            // change http to https
+                                            thumbnail = thumbnail.substring(0, 4) + 's' + thumbnail.substring(4);
+                                        }
+                                        else {
+                                            thumbnail = null;
+                                        }
+                                    }
+                                    else {
+                                        thumbnail = null;
+                                    }
+
+                                    JSONArray genres;
                                     ArrayList<String> genreArray = new ArrayList<>();
-                                    if (genres.length() != 0) {
-                                        for (int j = 0; j < genres.length(); j++) {
-                                            genreArray.add(genres.optString(j));
+                                    if (volumeObj.has("categories")) {
+                                        genres = volumeObj.getJSONArray("categories");
+                                        if (genres.length() != 0) {
+                                            for (int j = 0; j < genres.length(); j++) {
+                                                genreArray.add(genres.optString(j));
+                                            }
                                         }
                                     }
+
                                 /*JSONArray industryIds = volumeObj.getJSONArray("industryIdentifiers");
                                 for (JSONObject obj : industryIds) {
                                     if (obj.)
@@ -244,19 +288,53 @@ public class SearchBookActivity extends AppCompatActivity {
     }
 
     public void collectInput() {
+        title = searchBar.getText().toString();
+        author = authorFilter.getText().toString();
+        isbn = isbnFilter.getText().toString();
+
         // ensure that user input bar is not empty
-        if (title != null && !title.isEmpty()) {queryTitle = true;}
-        if (author != null && !author.isEmpty()) {queryAuthor = true;}
-        if (isbn != null && !isbn.isEmpty()) {
-            if (isbn.trim().length() != 13) {
-                Toast toast = Toast.makeText(SearchBookActivity.this, "The ISBN should be 13 digits", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-            else {
-                queryISBN = true;
+        if (title.isEmpty() && author.isEmpty() && isbn.isEmpty()) {
+            searchBar.setError("Required: one of title, author or ISBN");
+            authorFilter.setError("Required: one of title, author or ISBN");
+            isbnFilter.setError("Required: one of title, author or ISBN");
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+        else {
+            if (!title.isEmpty()) {queryTitle = true;}
+            if (!author.isEmpty()) {queryAuthor = true;}
+            if (!isbn.isEmpty()) {
+                if (isbn.trim().length() != 13) {
+                    isbnFilter.setError("The ISBN should be 13 digits");
+                }
+                else {
+                    queryISBN = true;
+                }
             }
         }
-        if (pubYear != null && !pubYear.isEmpty()) {queryPubYear = true;}
+    }
+
+    public String buildQuery() {
+        String query = "https://www.googleapis.com/books/v1/volumes?q=";
+        if (queryTitle) {
+            query = query.concat("intitle:" + changeQueryString(title));
+            //query = query.concat("+intitle:" + title);
+
+        }
+        if (queryAuthor) {
+            query = query.concat("inauthor:" + changeQueryString(author));
+            //query = query.concat("+inauthor:" + author);
+        }
+        if (queryISBN) {
+            query = query.concat("isbn:" + isbn);
+        }
+
+        query = query.concat("&key=AIzaSyBsFway_No563HaVDieoaixsaG8ocK6t7w");
+        Log.d("query", query);
+        return query;
+    }
+
+    private String changeQueryString(String str) {
+        return '"' + str.replaceAll(" ", "+") + '"';
     }
 }
 

@@ -39,16 +39,43 @@ public class SearchedBookAdapter extends RecyclerView.Adapter<SearchedBookAdapte
     @Override
     public void onBindViewHolder(@NonNull SearchedBookViewHolder holder, int position) {
         SearchedBookInfo bookInfo = searchedBooks.get(position);
-        holder.title.setText(bookInfo.getTitle());
-        int numAuthors = bookInfo.getNumAuthors();
-        holder.authors.setText("By ");
-        for(int i = 0; i < numAuthors; i++) {
-            holder.authors.append(bookInfo.getAuthors().get(i));
-            if (i< numAuthors -1) {
-                holder.authors.append(", ");
-            }
+        if (bookInfo.getTitle() == null) {
+            holder.title.setText("No title found");
         }
-        holder.pubyear.setText("Year of publication: " + bookInfo.getPublishedDate());
+        else {
+            holder.title.setText(bookInfo.getTitle());
+        }
+
+        if (bookInfo.getNumAuthors() == 0) {
+            holder.authors.setText("No authors found");
+        }
+        else {
+            int numAuthors = bookInfo.getNumAuthors();
+            holder.authors.setText("By ");
+            for(int i = 0; i < numAuthors; i++) {
+                holder.authors.append(bookInfo.getAuthors().get(i));
+                if (i< numAuthors -1) {
+                    holder.authors.append(", ");
+                }
+            }        }
+
+        if (bookInfo.getPublishedDate() == null) {
+            holder.title.setText("No publication year found");
+        }
+        else {
+            holder.pubyear.setText("Year of publication: " + bookInfo.getPublishedDate());
+        }
+
+        if (bookInfo.getThumbnail() != null) {
+            Glide.with(context)
+                    .asBitmap()
+                    .load(bookInfo.getThumbnail())
+                    .into(holder.coverPhoto);
+        }
+        else {
+            holder.coverPhoto.setImageDrawable(context.getApplicationContext().getDrawable(R.drawable.ic_image_not_found));
+        }
+
         holder.searchedBookParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,10 +95,6 @@ public class SearchedBookAdapter extends RecyclerView.Adapter<SearchedBookAdapte
                 context.startActivity(intent);
             }
         });
-        Glide.with(context)
-                .asBitmap()
-                .load(bookInfo.getThumbnail())
-                .into(holder.coverPhoto);
     }
 
     @Override
