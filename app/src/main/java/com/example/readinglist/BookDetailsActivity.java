@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -129,7 +130,23 @@ public class BookDetailsActivity extends AppCompatActivity {
     private void addBookToUserLibrary() {
         String androidID = DeviceUtilities.getAndroidID(this);
 
-        HttpHelper.addUserBook(this, androidID, title, authors, thumbnail, 0);
+        // check if the book already exists
+        HttpHelper.checkBookExists(this, androidID, title, authors, new Callback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean exists) {
+                if (!exists) {
+                    HttpHelper.addUserBook(getApplicationContext(), androidID, title, authors, thumbnail, 0);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Book already in library", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(String error) {
+                Toast.makeText(getApplicationContext(), "Unable to check for book: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
     }
