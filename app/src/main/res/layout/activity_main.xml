@@ -6,42 +6,65 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:padding="10dp">
+    android:padding="15dp"
+    android:background="@color/white">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/pageTitle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/titleLayout"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="30dp">
-
-        <TextView
-            android:id="@+id/pageTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Library"
-            android:fontFamily="@font/inter_medium"
-            android:layout_marginStart="16dp"
-            android:textSize="25dp"
-            android:layout_centerVertical="true"/>
-
-    </RelativeLayout>
+        android:text="  Library"
+        android:fontFamily="@font/inter_medium"
+        android:textSize="30dp"
+        android:paddingTop="15dp"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/booksRecView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/titleLayout"
-        android:layout_marginTop="10dp"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pageTitle"
+        android:layout_above="@+id/total_books"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/read_books"
+        android:id="@+id/total_books"
+        android:layout_marginBottom="4dp"
+        android:layout_alignParentStart="true"
+
+        android:text="Books: "
+        android:fontFamily="@font/inter_medium"
+        android:textSize="14dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/read_books"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:text="Books read: "
+        android:fontFamily="@font/inter_medium"
+        android:textSize="14dp"/>
+
+    <android.widget.Button
+        android:id="@+id/add_new_book_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:text="+"
+        android:textSize="25dp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/inter_medium"
         android:clickable="true"
-        app:srcCompat="@android:drawable/ic_input_add"
-        android:layout_margin="10dp"/>
+        android:layout_margin="10dp"
+        android:background="@drawable/add_button_background"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        />
 
 </RelativeLayout>

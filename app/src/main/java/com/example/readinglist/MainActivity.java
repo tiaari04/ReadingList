@@ -3,12 +3,16 @@ package com.example.readinglist;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -16,21 +20,28 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView booksRecyclerView;
-    private FloatingActionButton addButton;
+    private TextView numBooksReadTV, totalNumBooksTV;
+    private Button addButton;
     private String androidID;
     private ParentBookRecViewAdapter adapter;
     private ArrayList<BookRecView> recViews = new ArrayList<>();
     private ArrayList<Book> booksRead = new ArrayList<>();
     private ArrayList<Book> booksUnread = new ArrayList<>();
     private ArrayList<Book> booksReading = new ArrayList<>();
+    private int numBooksRead = 0;
+    private int totalNumOfBooks = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+
         booksRecyclerView = findViewById(R.id.booksRecView);
-        addButton = findViewById(R.id.fab);
+        addButton = findViewById(R.id.add_new_book_btn);
+        numBooksReadTV = findViewById(R.id.read_books);
+        totalNumBooksTV = findViewById(R.id.total_books);
 
         androidID = DeviceUtilities.getAndroidID(this);
 
@@ -77,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(ArrayList<Book> result) {
                 books.addAll(result);
                 setRecViews(books);
+                setBookCountValues();
                 adapter = new ParentBookRecViewAdapter(recViews, getApplicationContext());
                 booksRecyclerView.setAdapter(adapter);
                 booksRecyclerView.setLayoutManager((new LinearLayoutManager(getApplicationContext())));
@@ -104,10 +116,17 @@ public class MainActivity extends AppCompatActivity {
             }
             else if (books.get(i).getIsRead() == 1) {
                 booksRead.add(books.get(i));
+                numBooksRead++;
             }
             else if (books.get(i).getIsRead() == 2) {
                 booksReading.add(books.get(i));
             }
+            totalNumOfBooks++;
         }
+    }
+
+    private void setBookCountValues() {
+        totalNumBooksTV.append(Integer.toString(totalNumOfBooks));
+        numBooksReadTV.append(Integer.toString(numBooksRead));
     }
 }
