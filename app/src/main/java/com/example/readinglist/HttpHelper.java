@@ -43,10 +43,8 @@ public class HttpHelper {
                             // Parse the "exists" boolean value from the JSON response
                             boolean userExists = response.getBoolean("exists");
                             if (userExists) {
-                                Toast.makeText(context, "User exists!", Toast.LENGTH_SHORT).show();
                             }
                             else {
-                                Toast.makeText(context, "User doesn't exist!", Toast.LENGTH_SHORT).show();
                             }
                             callback.onSuccess(userExists);
                         } catch (Exception e) {
@@ -192,7 +190,6 @@ public class HttpHelper {
 
                                     // Do something with the book (e.g., display in a list)
                                     // For this example, we'll show a Toast
-                                    Toast.makeText(context, "Book: " + title + " by " + author, Toast.LENGTH_SHORT).show();
                                     Book userBook = new Book(title, author, readStatus, thumbnail);
                                     books.add(userBook);
                                 }
@@ -220,9 +217,9 @@ public class HttpHelper {
         requestQueue.add(jsonArrayRequest);
     }
 
-    public static void checkBookExists(Context context, String androidID, String title, String author, String thumbnail, int readStatus) {
+    public static void checkBookExists(Context context, String androidID, String title, String author, Callback<Boolean> callback) {
         // Create the URL for the GET request with query parameters
-        String url = BASE_URL + "/book-exists?title=" + title + "&author=" + author + "&android_id" + androidID;
+        String url = BASE_URL + "/book/exists/" + androidID + "/" + title + "/" + author;
 
         // Create a RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(context);
@@ -236,17 +233,9 @@ public class HttpHelper {
                         try {
                             // Check if the response indicates the book exists
                             boolean exists = response.getBoolean("exists");
-
-                            if (exists) {
-                                // Book already exists
-                                Toast.makeText(context, "Book already exists!", Toast.LENGTH_SHORT).show();
-                            } else {
-                                // Book does not exist, proceed to add the book
-                                addUserBook(context, androidID, title, author, thumbnail, readStatus); // Call method to add the book
-                            }
+                            callback.onSuccess(exists);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(context, "Error checking book existence", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
