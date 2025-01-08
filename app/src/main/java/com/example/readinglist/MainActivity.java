@@ -2,31 +2,14 @@ package com.example.readinglist;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.telecom.Call;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -35,10 +18,11 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView booksRecyclerView;
     private FloatingActionButton addButton;
     private String androidID;
-    private BooksRecViewAdapter adapter = new BooksRecViewAdapter(this);
-
-
-    //private static final String POSTGRES_URL = "http://172.28.5.140:5000/users/all";
+    private ParentBookRecViewAdapter adapter;
+    private ArrayList<BookRecView> recViews = new ArrayList<>();
+    private ArrayList<Book> booksRead = new ArrayList<>();
+    private ArrayList<Book> booksUnread = new ArrayList<>();
+    private ArrayList<Book> booksReading = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +35,6 @@ public class MainActivity extends AppCompatActivity {
         androidID = DeviceUtilities.getAndroidID(this);
 
         ArrayList<Book> books = new ArrayList<>();
-        //books.add(new Book("It Ends with Us", "Coleen Hoover", 1, "https://images-na.ssl-images-amazon.com/images/I/91CqNElQaKL._AC_UL210_SR210,210_.jpg"));
-
-        adapter.setBooks(books);
-        booksRecyclerView.setAdapter(adapter);
-        booksRecyclerView.setLayoutManager((new LinearLayoutManager(this)));
 
         getUserInfo(androidID, books);
 
@@ -97,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(ArrayList<Book> result) {
                 books.addAll(result);
+                setRecViews(books);
+                adapter = new ParentBookRecViewAdapter(recViews, getApplicationContext());
+                booksRecyclerView.setAdapter(adapter);
+                booksRecyclerView.setLayoutManager((new LinearLayoutManager(getApplicationContext())));
                 adapter.notifyDataSetChanged();
             }
 
@@ -105,5 +88,26 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Unable to get books: " + error, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void setRecViews(ArrayList<Book> books) {
+        categorizeBooks(books);
+        recViews.add(new BookRecView("Reading", booksReading));
+        recViews.add(new BookRecView("Unread", booksUnread));
+        recViews.add(new BookRecView("Read", booksRead));
+    }
+
+    private void categorizeBooks(ArrayList<Book> books) {
+        for (int i = 0; i < books.size(); i++) {
+            if (books.get(i).getIsRead() == 0) {
+                booksUnread.add(books.get(i));
+            }
+            else if (books.get(i).getIsRead() == 1) {
+                booksRead.add(books.get(i));
+            }
+            else if (books.get(i).getIsRead() == 2) {
+                booksReading.add(books.get(i));
+            }
+        }
     }
 }

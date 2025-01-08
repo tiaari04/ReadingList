@@ -16,12 +16,13 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-public class BooksRecViewAdapter extends RecyclerView.Adapter<BooksRecViewAdapter.ViewHolder> {
+public class SubBooksRecViewAdapter extends RecyclerView.Adapter<SubBooksRecViewAdapter.ViewHolder> {
 
-    private ArrayList<Book> books = new ArrayList<>();
+    private ArrayList<Book> books;
     private Context context;
 
-    public BooksRecViewAdapter(Context context) {
+    public SubBooksRecViewAdapter(ArrayList<Book> books, Context context) {
+        this.books = books;
         this.context = context;
     }
 
@@ -36,12 +37,6 @@ public class BooksRecViewAdapter extends RecyclerView.Adapter<BooksRecViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bookName.setText(books.get(position).getBookName());
-        if (books.get(position).getAuthor().isEmpty()) {
-            holder.authorName.setText("No authors found");
-        }
-        else {
-            holder.authorName.setText(books.get(position).getAuthor());
-        }
 
         if (books.get(position).getImgURL() == null) {
             holder.img.setImageDrawable(context.getApplicationContext().getDrawable(R.drawable.ic_image_not_found));
@@ -54,12 +49,6 @@ public class BooksRecViewAdapter extends RecyclerView.Adapter<BooksRecViewAdapte
                     .into(holder.img);
         }
 
-        if (books.get(position).getIsRead() == 0) {
-            holder.readStatus.setText("Status: unread");
-        }
-        else {
-            holder.readStatus.setText("Status: read");
-        }
         holder.itemViewParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,21 +62,14 @@ public class BooksRecViewAdapter extends RecyclerView.Adapter<BooksRecViewAdapte
         return books.size();
     }
 
-    public void setBooks(ArrayList<Book> books) {
-        this.books = books;
-        notifyDataSetChanged();
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView bookName, authorName, readStatus;
+        private TextView bookName;
         private CardView itemViewParent;
         private ImageView img;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             bookName = itemView.findViewById(R.id.bookName);
-            authorName = itemView.findViewById(R.id.bookAuthor);
-            readStatus = itemView.findViewById(R.id.read_status);
             itemViewParent = itemView.findViewById(R.id.item_view_parent);
             img = itemView.findViewById(androidx.appcompat.R.id.image);
         }
