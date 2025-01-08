@@ -5,22 +5,35 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="8dp"
     tools:context=".BookDetailsActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="   Book Details"
+        android:fontFamily="@font/inter_medium"
+        android:textSize="30dp"
+        android:paddingTop="15dp"
+        android:id="@+id/book_details_textview"
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/top_rel_layout"
-        android:layout_margin="7dp">
+        android:layout_margin="7dp"
+        android:layout_below="@id/book_details_textview">
 
         <ImageView
             android:layout_width="150dp"
             android:layout_height="190dp"
             android:id="@+id/image_bd"
             android:layout_margin="10dp"
-            android:src="@drawable/ic_launcher_background"/>
+            android:src="@drawable/ic_image_not_found"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -35,7 +48,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:text="Book name"
-                android:textSize="18dp"/>
+                android:textSize="20dp"
+                android:fontFamily="@font/inter_medium"
+                />
 
             <TextView
                 android:id="@+id/bookAuthor_bd"
@@ -44,7 +59,10 @@
                 android:layout_below="@id/bookName_bd"
                 android:layout_margin="3dp"
                 android:text="By Author"
-                android:textStyle="italic"/>
+                android:textStyle="italic"
+                android:textSize="20dp"
+                android:fontFamily="@font/inter_medium"
+                />
 
             <TextView
                 android:id="@+id/pubYear_bd"
@@ -52,7 +70,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/bookAuthor_bd"
                 android:layout_margin="3dp"
-                android:text="ISBN:" />
+                android:textSize="20dp"
+                android:text="ISBN:"
+                android:fontFamily="@font/inter_medium"
+                />
 
             <TextView
                 android:id="@+id/page_count_bd"
@@ -60,7 +81,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/pubYear_bd"
                 android:layout_margin="3dp"
-                android:text="Page Count:" />
+                android:textSize="20dp"
+                android:text="Page Count:"
+                android:fontFamily="@font/inter_medium"
+                />
 
         </RelativeLayout>
     </RelativeLayout>
@@ -69,47 +93,73 @@
         android:id="@+id/isbn_bd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="3dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="3dp"
         android:layout_below="@id/top_rel_layout"
-        android:text="ISBN 13" />
+        android:text="ISBN 13"
+        android:textSize="20dp"
+        android:fontFamily="@font/inter_medium"
+        />
 
     <TextView
         android:id="@+id/genre_bd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="3dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="3dp"
         android:layout_below="@id/isbn_bd"
-        android:text="Genre" />
+        android:text="Genre"
+        android:textSize="20dp"
+        android:fontFamily="@font/inter_medium"
+        />
 
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/description"
+        android:id="@+id/descriptionSV"
         android:layout_below="@id/genre_bd"
-        android:text="Description"/>
+        android:layout_above="@id/buttons">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/description"
+            android:text="Description"
+            android:textSize="17dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="3dp"
+            android:fontFamily="@font/inter_medium"
+            />
+    </ScrollView>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        android:layout_margin="10dp">
+        android:layout_marginBottom="12dp"
+        android:id="@+id/buttons">
 
         <Button
+            android:id="@+id/back_to_search_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/back_to_search_btn"
-            android:text="Back To Search"
+            android:layout_margin="8dp"
             android:layout_weight="1"
-            android:layout_margin="8dp"/>
+            android:fontFamily="@font/inter_medium"
+            android:text="Back To Search"
+            android:backgroundTint="@color/purple"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/add_to_lib_btn"
             android:text="Add to Library"
+            android:fontFamily="@font/inter_medium"
             android:layout_weight="1"
-            android:layout_margin="8dp"/>
+            android:layout_margin="8dp"
+            android:backgroundTint="@color/purple"/>
 
     </LinearLayout>
 

@@ -6,7 +6,8 @@
     android:id="@+id/item_view_parent"
     app:cardElevation="3dp"
     app:cardCornerRadius="6dp"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:layout_margin="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
