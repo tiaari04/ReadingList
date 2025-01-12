@@ -24,17 +24,6 @@ public class SearchedBookInfo {
         this.thumbnail = thumbnail;
     }
 
-    public SearchedBookInfo(String title, ArrayList<String> authors, String publishedDate, ArrayList<String> genres, String description, int pageCount, String thumbnail) {
-        this.title = title;
-        this.authors = authors;
-        this.publishedDate = publishedDate;
-        this.genres = genres;
-        this.ISBN = "0";
-        this.description = description;
-        this.pageCount = pageCount;
-        this.thumbnail = thumbnail;
-    }
-
     public String getTitle() {
         return title;
     }
