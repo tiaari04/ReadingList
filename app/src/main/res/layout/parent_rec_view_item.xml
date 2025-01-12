@@ -2,18 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="3dp">
 
     <TextView
         android:id="@+id/parent_item_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Title" />
+        android:background="@color/grey"
+        android:text="Title"
+        android:fontFamily="@font/inter_medium"
+        android:textSize="18dp"
+        android:paddingStart="8dp"
+        android:paddingBottom="3dp"
+        android:paddingTop="3dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/child_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" />
+        android:orientation="horizontal"/>
 
 </LinearLayout>

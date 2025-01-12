@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -129,8 +130,46 @@ public class BookDetailsActivity extends AppCompatActivity {
     private void addBookToUserLibrary() {
         String androidID = DeviceUtilities.getAndroidID(this);
 
-        HttpHelper.addUserBook(this, androidID, title, authors, thumbnail, 0);
+        // check if the book already exists
+        HttpHelper.checkBookExists(this, androidID, title, authors, new Callback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean exists) {
+                if (!exists) {
+                    HttpHelper.addUserBook(BookDetailsActivity.this, androidID, title, authors, thumbnail, ISBN, 0, new Callback<Void>() {
+                        @Override
+                        public void onSuccess(Void result) {
+                            runOnUiThread(() -> {
+                                Toast.makeText(getApplicationContext(), "Book added to library", Toast.LENGTH_SHORT).show();
+                                navigateToMainActivity(); // Navigate after successfully adding the book
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(String error) {
+                            runOnUiThread(() ->
+                                    Toast.makeText(getApplicationContext(), "Unable to add book: " + error, Toast.LENGTH_SHORT).show());
+                                    navigateToMainActivity();
+                        }
+                    });
+                }
+                else {
+                    runOnUiThread(() -> {
+                        Toast.makeText(getApplicationContext(), "Book already in library", Toast.LENGTH_SHORT).show();
+                        navigateToMainActivity(); // Navigate if the book is already in the library
+                    });                }
+            }
+            @Override
+            public void onFailure(String error) {
+                runOnUiThread(() ->
+                        Toast.makeText(getApplicationContext(), "Unable to check for book: " + error, Toast.LENGTH_SHORT).show());
+                        navigateToMainActivity();
+            }
+        });
+    }
+
+    private void navigateToMainActivity() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
+        finish(); // Close the current activity to prevent going back here
     }
 }

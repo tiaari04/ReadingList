@@ -9,11 +9,12 @@ public class Book {
     private int isRead;
     private String imgURL;
 
-    public Book(String bookName, String author, int isRead, String imgURL) {
+    public Book(String bookName, String author, int isRead, String imgURL, String ISBN) {
         this.bookName = bookName;
         this.author = author;
         this.isRead = isRead;
         this.imgURL = imgURL;
+        this.ISBN = ISBN;
     }
 
 
@@ -48,5 +49,13 @@ public class Book {
 
     public void setImgURL(String imgURL) {
         this.imgURL = imgURL;
+    }
+
+    public String getISBN() {
+        return ISBN;
+    }
+
+    public void setISBN(String ISBN) {
+        this.ISBN = ISBN;
     }
 }

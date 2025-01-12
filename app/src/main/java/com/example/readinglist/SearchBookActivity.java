@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -65,6 +66,7 @@ public class SearchBookActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_search_book);
 
         noResults = findViewById(R.id.search_textview);
@@ -223,16 +225,6 @@ public class SearchBookActivity extends AppCompatActivity {
                                     else {
                                         description = null;
                                     }
-                                    //JSONObject imageLinks = volumeObj.optJSONObject("imageLinks");
-                                    //String thumbnail;
-                                    /*if (imageLinks != NULL) {
-                                        thumbnail = imageLinks.optString("smallThumbnail");
-                                        // change http to https
-                                        thumbnail = thumbnail.substring(0, 4) + 's' + thumbnail.substring(4);
-                                    }
-                                    else {
-                                        thumbnail = "https://recsports.utk.edu/wp-content/uploads/sites/46/2018/05/Image-not-available_1-1-800x800.jpg";
-                                    }*/
 
                                     String thumbnail;
                                     if (volumeObj.has("imageLinks")) {
@@ -261,13 +253,20 @@ public class SearchBookActivity extends AppCompatActivity {
                                         }
                                     }
 
-                                /*JSONArray industryIds = volumeObj.getJSONArray("industryIdentifiers");
-                                for (JSONObject obj : industryIds) {
-                                    if (obj.)
-                                }
-                                JSONObject industryIdsObj = industryIds.getJSONObject();*/
+                                    JSONArray industryIds = null;
+                                    String isbn13Identifier = null;
+                                    if (volumeObj.has("industryIdentifiers")) {
+                                        industryIds = volumeObj.getJSONArray("industryIdentifiers");
+                                        for (int j = 0; j < industryIds.length(); j++) {
+                                            JSONObject idObject = industryIds.getJSONObject(j);
+                                            if ("ISBN_13".equals(idObject.getString("type"))) {
+                                                isbn13Identifier = idObject.getString("identifier");
+                                                break;
+                                            }
+                                        }
+                                    }
 
-                                    SearchedBookInfo bookInfo = new SearchedBookInfo(title, authorsArray, pubYear, genreArray, description, pageCount, thumbnail);
+                                    SearchedBookInfo bookInfo = new SearchedBookInfo(title, authorsArray, pubYear, genreArray, isbn13Identifier, description, pageCount, thumbnail);
                                     searchedBooks.add(bookInfo);
                                 }
                             }

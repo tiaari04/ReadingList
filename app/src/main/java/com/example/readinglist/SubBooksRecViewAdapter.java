@@ -1,6 +1,7 @@
 package com.example.readinglist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,13 +49,6 @@ public class SubBooksRecViewAdapter extends RecyclerView.Adapter<SubBooksRecView
                     .error(R.drawable.ic_image_not_found)
                     .into(holder.img);
         }
-
-        holder.itemViewParent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(context, books.get(position).getBookName() + " selected", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
@@ -72,6 +66,22 @@ public class SubBooksRecViewAdapter extends RecyclerView.Adapter<SubBooksRecView
             bookName = itemView.findViewById(R.id.bookName);
             itemViewParent = itemView.findViewById(R.id.item_view_parent);
             img = itemView.findViewById(androidx.appcompat.R.id.image);
+
+            itemViewParent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        Book clickedBook = books.get(position);
+
+                        // Perform your action here
+                        Intent intent = new Intent(context, LibraryBookDetails.class);
+                        intent.putExtra("title", clickedBook.getBookName());
+                        intent.putExtra("authors", clickedBook.getAuthor().toString());
+                        context.startActivity(intent);
+                    }
+                }
+            });
         }
     }
 }
