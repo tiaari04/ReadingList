@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">ReadingList</string>
+
+    <string-array name="read_status_list_spinner">
+        <item>Reading</item>
+        <item>Unread</item>
+        <item>Read</item>
+    </string-array>
 </resources>
