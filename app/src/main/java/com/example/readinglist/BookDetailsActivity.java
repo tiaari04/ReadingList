@@ -135,19 +135,41 @@ public class BookDetailsActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Boolean exists) {
                 if (!exists) {
-                    HttpHelper.addUserBook(getApplicationContext(), androidID, title, authors, thumbnail, 0);
+                    HttpHelper.addUserBook(BookDetailsActivity.this, androidID, title, authors, thumbnail, ISBN, 0, new Callback<Void>() {
+                        @Override
+                        public void onSuccess(Void result) {
+                            runOnUiThread(() -> {
+                                Toast.makeText(getApplicationContext(), "Book added to library", Toast.LENGTH_SHORT).show();
+                                navigateToMainActivity(); // Navigate after successfully adding the book
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(String error) {
+                            runOnUiThread(() ->
+                                    Toast.makeText(getApplicationContext(), "Unable to add book: " + error, Toast.LENGTH_SHORT).show());
+                                    navigateToMainActivity();
+                        }
+                    });
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "Book already in library", Toast.LENGTH_SHORT).show();
-                }
+                    runOnUiThread(() -> {
+                        Toast.makeText(getApplicationContext(), "Book already in library", Toast.LENGTH_SHORT).show();
+                        navigateToMainActivity(); // Navigate if the book is already in the library
+                    });                }
             }
             @Override
             public void onFailure(String error) {
-                Toast.makeText(getApplicationContext(), "Unable to check for book: " + error, Toast.LENGTH_SHORT).show();
+                runOnUiThread(() ->
+                        Toast.makeText(getApplicationContext(), "Unable to check for book: " + error, Toast.LENGTH_SHORT).show());
+                        navigateToMainActivity();
             }
         });
+    }
 
+    private void navigateToMainActivity() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
+        finish(); // Close the current activity to prevent going back here
     }
 }
