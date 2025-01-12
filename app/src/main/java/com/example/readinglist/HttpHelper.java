@@ -2,6 +2,7 @@ package com.example.readinglist;
 
 import android.content.Context;
 import android.os.StrictMode;
+import android.telecom.Call;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -112,7 +113,7 @@ public class HttpHelper {
     }
 
     public static void addUserBook(Context context, String androidID, String title,
-                                   String author, String thumbnail, int readStatus) {
+                                   String author, String thumbnail, String ISBN, int readStatus, Callback<Void> callback) {
         // Build the URL for the POST request
         String url = BASE_URL + "/books";
 
@@ -123,6 +124,7 @@ public class HttpHelper {
             requestBody.put("title", title);
             requestBody.put("author", author);
             requestBody.put("thumbnail", thumbnail);
+            requestBody.put("isbn", ISBN);
             requestBody.put("read_status", Integer.toString(readStatus));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -139,11 +141,10 @@ public class HttpHelper {
                     public void onResponse(JSONObject response) {
                         try {
                             // Handle the successful response (new book added)
-                            String newBook = response.getString("title");
-                            Toast.makeText(context, "Title " + newBook + " added successfully!", Toast.LENGTH_SHORT).show();
-                        } catch (JSONException e) {
+                            callback.onSuccess(null);
+                        } catch (Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(context, "Error adding book", Toast.LENGTH_SHORT).show();
+                            callback.onFailure("Error parsing response: " + e.getMessage());
                         }
                     }
                 },
@@ -152,7 +153,7 @@ public class HttpHelper {
                     public void onErrorResponse(VolleyError error) {
                         // Handle errors (e.g., network error)
                         error.printStackTrace();
-                        Toast.makeText(context, "Request failed", Toast.LENGTH_SHORT).show();
+                        callback.onFailure("Request failed: " + error.getMessage());
                     }
                 }
         );
@@ -187,10 +188,11 @@ public class HttpHelper {
                                     String author = book.getString("author");
                                     String thumbnail = book.getString("thumbnail");
                                     int readStatus = book.getInt("read_status");
+                                    String isbn = book.getString("isbn");
 
                                     // Do something with the book (e.g., display in a list)
                                     // For this example, we'll show a Toast
-                                    Book userBook = new Book(title, author, readStatus, thumbnail);
+                                    Book userBook = new Book(title, author, readStatus, thumbnail, isbn);
                                     books.add(userBook);
                                 }
                                 callback.onSuccess(books);
@@ -252,4 +254,123 @@ public class HttpHelper {
         // Add the request to the queue to execute it
         requestQueue.add(jsonObjectRequest);
     }
+
+    public static void retrieveBook(Context context, String androidID, String title, String author, Callback<Book> callback) {
+        // Create the URL for the GET request with query parameters
+        String url = BASE_URL + "/book/retrieve/" + androidID + "/" + title + "/" + author;
+
+        // Create a RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        // Create a JSON Object Request to check if the book exists
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray retrievedBookArray = response.getJSONArray("book");
+                            for (int i = 0; i < retrievedBookArray.length(); i++) {
+                                JSONObject retrievedBook = retrievedBookArray.getJSONObject(i);
+
+                                String thumbnail = retrievedBook.getString("thumbnail");
+                                String isbn = retrievedBook.getString("isbn");
+                                int readStatus = retrievedBook.getInt("read_status");
+                                Book book = new Book(title, author, readStatus, thumbnail, isbn);
+                                callback.onSuccess(book);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            callback.onFailure("Unable to retireve book:" + e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle errors (e.g., network error)
+                        error.printStackTrace();
+                        Toast.makeText(context, "Request failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        // Add the request to the queue to execute it
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    public static void changeReadStatus(Context context, String androidID, String title, String author, int readStatus, Callback<String> callback) {
+        // Create the URL for the GET request with query parameters
+        String url = BASE_URL + "/book/changeStatus/" + androidID + "/" + title + "/" + author + "/" + readStatus;
+
+        // Create a RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        // Create a JSON Object Request to check if the book exists
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String responseMessage = response.getString("message");
+                            callback.onSuccess(responseMessage);
+                        }
+                        catch (Exception e) {
+                            e.printStackTrace();
+                            callback.onFailure("Unable to change read status:" + e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle errors (e.g., network error)
+                        error.printStackTrace();
+                        callback.onFailure("Request failed: " + error.getMessage());
+                    }
+                }
+        );
+
+        // Add the request to the queue to execute it
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    public static void deleteUserBook(Context context, String androidID, String title, String author, Callback<String> callback) {
+        // Create the URL for the GET request with query parameters
+        String url = BASE_URL + "/book/delete/" + androidID + "/" + title + "/" + author;
+
+        // Create a RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        // Create a JSON Object Request to check if the book exists
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String responseMessage = response.getString("message");
+                            callback.onSuccess(responseMessage);
+                        }
+                        catch (Exception e) {
+                            e.printStackTrace();
+                            callback.onFailure("Unable to delete book:" + e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle errors (e.g., network error)
+                        error.printStackTrace();
+                        Toast.makeText(context, "Request failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        // Add the request to the queue to execute it
+        requestQueue.add(jsonObjectRequest);
+    }
+
 }
