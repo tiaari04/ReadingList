@@ -1,3 +1,9 @@
+import java.util.Properties
+
+val passwordsPropertiesFile = project.rootProject.file("app/passwords.properties")
+val passwordsProperties = Properties()
+passwordsProperties.load(passwordsPropertiesFile.inputStream())
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -14,6 +20,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val apiKey: String = passwordsProperties.getProperty("key")
+        buildConfigField("String", "APIKEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -25,6 +34,11 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
