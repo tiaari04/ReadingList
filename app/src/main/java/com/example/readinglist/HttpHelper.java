@@ -1,8 +1,6 @@
 package com.example.readinglist;
 
 import android.content.Context;
-import android.os.StrictMode;
-import android.telecom.Call;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -13,12 +11,6 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import java.io.*;
-import java.net.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import org.json.JSONArray;

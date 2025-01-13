@@ -34,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:text="Book name"
+                android:textColor="@color/black"
                 android:textSize="18dp"/>
 
             <TextView
@@ -43,6 +44,7 @@
                 android:layout_below="@id/bookName_sb"
                 android:layout_margin="5dp"
                 android:text="By Author"
+                android:textColor="@color/black"
                 android:textStyle="italic"/>
 
             <TextView
@@ -51,7 +53,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/bookAuthor_sb"
                 android:layout_margin="5dp"
-                android:text="Year of Publication: " />
+                android:text="Year of Publication: "
+                android:textColor="@color/black"/>
 
 
         </RelativeLayout>

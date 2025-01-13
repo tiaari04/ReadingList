@@ -1,23 +1,13 @@
 package com.example.readinglist;
 
-import static org.json.JSONObject.NULL;
-
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -40,9 +29,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SearchBookActivity extends AppCompatActivity {
 
@@ -327,7 +313,7 @@ public class SearchBookActivity extends AppCompatActivity {
             query = query.concat("isbn:" + isbn);
         }
 
-        query = query.concat("&key=AIzaSyBsFway_No563HaVDieoaixsaG8ocK6t7w");
+        query = query.concat("&key=" + com.example.readinglist.BuildConfig.APIKEY);
         Log.d("query", query);
         return query;
     }

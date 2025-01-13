@@ -119,6 +119,7 @@
         android:layout_height="wrap_content"
         android:text="No Results"
         android:visibility="gone"
+        android:textColor="@color/black"
         android:layout_centerInParent="true"
         android:textSize="20sp"
         />
@@ -127,6 +128,7 @@
         android:id="@+id/back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
         android:text="Back to Reading List"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"

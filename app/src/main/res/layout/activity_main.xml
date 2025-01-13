@@ -16,6 +16,7 @@
         android:text="  Library"
         android:fontFamily="@font/inter_medium"
         android:textSize="30dp"
+        android:textColor="@color/black"
         android:paddingTop="15dp"
         />
 
@@ -35,7 +36,7 @@
         android:id="@+id/total_books"
         android:layout_marginBottom="4dp"
         android:layout_alignParentStart="true"
-
+        android:textColor="@color/black"
         android:text="Books: "
         android:fontFamily="@font/inter_medium"
         android:textSize="14dp"/>
@@ -46,6 +47,7 @@
         android:id="@+id/read_books"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:textColor="@color/black"
         android:text="Books read: "
         android:fontFamily="@font/inter_medium"
         android:textSize="14dp"/>
