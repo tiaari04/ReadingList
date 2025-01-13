@@ -55,3 +55,23 @@ Backend:
 API:
 
 * Google Books API for book search and metadata
+
+# **Installation and Setup**
+1. Clone the Repository
+```
+git clone <repository-url>
+cd reading-list-app
+```
+2. Setup backend <br/>
+Backend Configuration:
+The backend uses a PostgreSQL database. Detailed setup instructions are available upon request.
+
+# **Usage**
+1. Launch the app and search for books by title, author, or ISBN.
+2. Click on a book to view its details.
+3. Add desired books to your library.
+4. Manage your library by viewing, updating read status, or deleting books.
+
+# **Future Improvements**
+* Implement search bar to search through all the books in a user's library
+* Allow users to have a friends list and view other users' libraries
