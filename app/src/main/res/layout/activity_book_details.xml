@@ -16,6 +16,7 @@
         android:fontFamily="@font/inter_medium"
         android:textSize="30dp"
         android:paddingTop="15dp"
+        android:textColor="@color/black"
         android:id="@+id/book_details_textview"
         />
 
@@ -49,6 +50,7 @@
                 android:text="Book name"
                 android:textSize="20dp"
                 android:fontFamily="@font/inter_medium"
+                android:textColor="@color/black"
                 />
 
             <TextView
@@ -61,6 +63,7 @@
                 android:textStyle="italic"
                 android:textSize="20dp"
                 android:fontFamily="@font/inter_medium"
+                android:textColor="@color/black"
                 />
 
             <TextView
@@ -72,6 +75,7 @@
                 android:textSize="20dp"
                 android:text="ISBN:"
                 android:fontFamily="@font/inter_medium"
+                android:textColor="@color/black"
                 />
 
             <TextView
@@ -83,6 +87,7 @@
                 android:textSize="20dp"
                 android:text="Page Count:"
                 android:fontFamily="@font/inter_medium"
+                android:textColor="@color/black"
                 />
 
         </RelativeLayout>
@@ -98,6 +103,7 @@
         android:text="ISBN 13"
         android:textSize="20dp"
         android:fontFamily="@font/inter_medium"
+        android:textColor="@color/black"
         />
 
     <TextView
@@ -110,6 +116,7 @@
         android:text="Genre"
         android:textSize="20dp"
         android:fontFamily="@font/inter_medium"
+        android:textColor="@color/black"
         />
 
     <ScrollView
@@ -128,6 +135,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginBottom="3dp"
             android:fontFamily="@font/inter_medium"
+            android:textColor="@color/black"
             />
     </ScrollView>
 
@@ -148,6 +156,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/inter_medium"
             android:text="Back To Search"
+            android:textColor="@color/white"
             android:backgroundTint="@color/purple"/>
 
         <Button
@@ -158,6 +167,7 @@
             android:fontFamily="@font/inter_medium"
             android:layout_weight="1"
             android:layout_margin="8dp"
+            android:textColor="@color/white"
             android:backgroundTint="@color/purple"/>
 
     </LinearLayout>

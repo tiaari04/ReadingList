@@ -16,6 +16,7 @@
         android:fontFamily="@font/inter_medium"
         android:textSize="30dp"
         android:paddingTop="15dp"
+        android:textColor="@color/black"
         android:id="@+id/book_details_library_textview"
         />
 
@@ -34,6 +35,7 @@
         android:layout_margin="5dp"
         android:text="Title"
         android:textSize="20dp"
+        android:textColor="@color/black"
         android:fontFamily="@font/inter_medium"
         android:layout_gravity="center_horizontal"
         />
@@ -45,6 +47,7 @@
         android:layout_margin="5dp"
         android:text="By Author"
         android:textStyle="italic"
+        android:textColor="@color/black"
         android:textSize="20dp"
         android:fontFamily="@font/inter_medium"
         android:layout_gravity="center_horizontal"
@@ -56,6 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:textSize="20dp"
+        android:textColor="@color/black"
         android:text="ISBN:"
         android:fontFamily="@font/inter_medium"
         android:layout_gravity="center_horizontal"
@@ -68,6 +72,7 @@
         android:layout_below="@id/pubYear_bd"
         android:layout_margin="3dp"
         android:textSize="20dp"
+        android:textColor="@color/black"
         android:text="Read Status:"
         android:fontFamily="@font/inter_medium"
         android:layout_gravity="center_horizontal"
@@ -78,6 +83,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/delete_from_lib_btn"
         android:text="Delete from Library"
+        android:textColor="@color/white"
         android:fontFamily="@font/inter_medium"
         android:layout_margin="8dp"
         android:backgroundTint="@color/purple"
@@ -91,6 +97,7 @@
         android:fontFamily="@font/inter_medium"
         android:text="Back To Library"
         android:backgroundTint="@color/purple"
+        android:textColor="@color/white"
         android:layout_gravity="center_horizontal"/>
 
     <Spinner
@@ -102,6 +109,7 @@
         android:padding="10dp"
         android:spinnerMode="dropdown"
         android:layout_gravity="center_horizontal"
+        android:textColor="@color/black"
         />
 
     <Button
@@ -112,6 +120,7 @@
         android:fontFamily="@font/inter_medium"
         android:text="Done"
         android:backgroundTint="@color/purple"
+        android:textColor="@color/white"
         android:layout_gravity="center_horizontal"/>
 
 

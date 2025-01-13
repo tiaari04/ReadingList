@@ -31,6 +31,7 @@
             android:layout_margin="3dp"
             android:text="Book name"
             android:textSize="14dp"
+            android:textColor="@color/black"
             android:fontFamily="@font/inter_medium"
             android:paddingEnd="6dp"
             android:paddingStart="6dp"
